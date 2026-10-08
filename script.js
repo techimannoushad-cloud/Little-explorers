@@ -1,18 +1,59 @@
-```javascript
 // ==========================================
 // LITTLE EXPLORERS
-// 3D GAME ENGINE
+// 3D WORLD TEST
 // ==========================================
 
-const canvas = document.getElementById("gameCanvas");
+const loadingScreen = document.getElementById("loadingScreen");
+
+function hideLoading() {
+    if (loadingScreen) {
+        loadingScreen.style.display = "none";
+    }
+}
+
+// Show errors instead of freezing forever
+window.addEventListener("error", function (event) {
+
+    console.error(event.error || event.message);
+
+    if (loadingScreen) {
+        loadingScreen.innerHTML = `
+            <div class="loading-box">
+                <h1>😅 Oops!</h1>
+                <p>The 3D world had a little problem.</p>
+                <p style="font-size:14px;margin-top:15px;">
+                    Check the browser console for the error.
+                </p>
+            </div>
+        `;
+    }
+
+});
+
+
+// ==========================================
+// CHECK THREE.JS
+// ==========================================
+
+if (typeof THREE === "undefined") {
+
+    throw new Error(
+        "Three.js did not load. Check the internet connection or Three.js script."
+    );
+
+}
+
 
 // ==========================================
 // SCENE
 // ==========================================
 
+const canvas = document.getElementById("gameCanvas");
+
 const scene = new THREE.Scene();
 
 scene.background = new THREE.Color(0x87ceeb);
+
 
 // ==========================================
 // CAMERA
@@ -25,7 +66,8 @@ const camera = new THREE.PerspectiveCamera(
     1000
 );
 
-camera.position.set(0, 8, 12);
+camera.position.set(0, 7, 12);
+
 
 // ==========================================
 // RENDERER
@@ -45,8 +87,9 @@ renderer.setPixelRatio(
     Math.min(window.devicePixelRatio, 2)
 );
 
+
 // ==========================================
-// LIGHTING
+// LIGHT
 // ==========================================
 
 const sunlight = new THREE.DirectionalLight(
@@ -54,20 +97,18 @@ const sunlight = new THREE.DirectionalLight(
     2
 );
 
-sunlight.position.set(
-    10,
-    20,
-    10
-);
+sunlight.position.set(10, 20, 10);
 
 scene.add(sunlight);
 
+
 const ambientLight = new THREE.AmbientLight(
     0xffffff,
-    0.6
+    0.7
 );
 
 scene.add(ambientLight);
+
 
 // ==========================================
 // GROUND
@@ -91,6 +132,7 @@ ground.rotation.x = -Math.PI / 2;
 
 scene.add(ground);
 
+
 // ==========================================
 // PATH
 // ==========================================
@@ -110,9 +152,11 @@ const path =
     );
 
 path.rotation.x = -Math.PI / 2;
-path.position.y = 0.01;
+
+path.position.y = 0.02;
 
 scene.add(path);
+
 
 // ==========================================
 // HOUSE
@@ -123,49 +167,34 @@ function createHouse(x, z) {
     const house = new THREE.Group();
 
     // Walls
-    const wallGeometry =
-        new THREE.BoxGeometry(5, 3, 5);
-
-    const wallMaterial =
-        new THREE.MeshStandardMaterial({
-            color: 0xf1dfb8
-        });
-
     const walls =
         new THREE.Mesh(
-            wallGeometry,
-            wallMaterial
+            new THREE.BoxGeometry(5, 3, 5),
+            new THREE.MeshStandardMaterial({
+                color: 0xf1dfb8
+            })
         );
 
     walls.position.y = 1.5;
 
     house.add(walls);
 
+
     // Roof
-    const roofGeometry =
-        new THREE.ConeGeometry(
-            4,
-            2.5,
-            4
-        );
-
-    const roofMaterial =
-        new THREE.MeshStandardMaterial({
-            color: 0x9a6245
-        });
-
     const roof =
         new THREE.Mesh(
-            roofGeometry,
-            roofMaterial
+            new THREE.ConeGeometry(4, 2.5, 4),
+            new THREE.MeshStandardMaterial({
+                color: 0x9a6245
+            })
         );
 
     roof.position.y = 4;
 
-    roof.rotation.y =
-        Math.PI / 4;
+    roof.rotation.y = Math.PI / 4;
 
     house.add(roof);
+
 
     house.position.set(x, 0, z);
 
@@ -173,6 +202,7 @@ function createHouse(x, z) {
 }
 
 createHouse(-10, -8);
+
 
 // ==========================================
 // MOSQUE
@@ -182,79 +212,66 @@ function createMosque(x, z) {
 
     const mosque = new THREE.Group();
 
+
     // Main building
-    const buildingGeometry =
-        new THREE.CylinderGeometry(
-            4,
-            4,
-            5,
-            32
-        );
-
-    const buildingMaterial =
-        new THREE.MeshStandardMaterial({
-            color: 0xf4f0df
-        });
-
     const building =
         new THREE.Mesh(
-            buildingGeometry,
-            buildingMaterial
+            new THREE.CylinderGeometry(
+                4,
+                4,
+                5,
+                32
+            ),
+            new THREE.MeshStandardMaterial({
+                color: 0xf4f0df
+            })
         );
 
     building.position.y = 2.5;
 
     mosque.add(building);
 
+
     // Dome
-    const domeGeometry =
-        new THREE.SphereGeometry(
-            4.2,
-            32,
-            16,
-            0,
-            Math.PI * 2,
-            0,
-            Math.PI / 2
-        );
-
-    const domeMaterial =
-        new THREE.MeshStandardMaterial({
-            color: 0x4d8065
-        });
-
     const dome =
         new THREE.Mesh(
-            domeGeometry,
-            domeMaterial
+            new THREE.SphereGeometry(
+                4.2,
+                32,
+                16,
+                0,
+                Math.PI * 2,
+                0,
+                Math.PI / 2
+            ),
+            new THREE.MeshStandardMaterial({
+                color: 0x4d8065
+            })
         );
 
     dome.position.y = 5;
 
     mosque.add(dome);
 
-    // Minaret
-    const minaretGeometry =
-        new THREE.CylinderGeometry(
-            0.6,
-            0.8,
-            8,
-            16
-        );
 
+    // Minaret
     const minaret =
         new THREE.Mesh(
-            minaretGeometry,
-            buildingMaterial
+            new THREE.CylinderGeometry(
+                0.6,
+                0.8,
+                8,
+                16
+            ),
+            new THREE.MeshStandardMaterial({
+                color: 0xf4f0df
+            })
         );
 
-    minaret.position.set(
-        5,
-        4,
-        0
-    );
+    minaret.position.set(5, 4, 0);
 
     mosque.add(minaret);
+
 
     mosque.position.set(x, 0, z);
 
@@ -262,6 +279,7 @@ function createMosque(x, z) {
 }
 
 createMosque(12, -12);
+
 
 // ==========================================
 // TREES
@@ -271,56 +289,49 @@ function createTree(x, z) {
 
     const tree = new THREE.Group();
 
-    const trunkGeometry =
-        new THREE.CylinderGeometry(
-            0.35,
-            0.45,
-            2,
-            8
-        );
-
-    const trunkMaterial =
-        new THREE.MeshStandardMaterial({
-            color: 0x795548
-        });
 
     const trunk =
         new THREE.Mesh(
-            trunkGeometry,
-            trunkMaterial
+            new THREE.CylinderGeometry(
+                0.35,
+                0.45,
+                2,
+                8
+            ),
+            new THREE.MeshStandardMaterial({
+                color: 0x795548
+            })
         );
 
     trunk.position.y = 1;
 
     tree.add(trunk);
 
-    const leavesGeometry =
-        new THREE.SphereGeometry(
-            1.7,
-            16,
-            16
-        );
-
-    const leavesMaterial =
-        new THREE.MeshStandardMaterial({
-            color: 0x4f8a55
-        });
 
     const leaves =
         new THREE.Mesh(
-            leavesGeometry,
-            leavesMaterial
+            new THREE.SphereGeometry(
+                1.7,
+                16,
+                16
+            ),
+            new THREE.MeshStandardMaterial({
+                color: 0x4f8a55
+            })
         );
 
     leaves.position.y = 3;
 
     tree.add(leaves);
 
+
     tree.position.set(x, 0, z);
 
     scene.add(tree);
 }
 
+
+// Create trees
 for (let i = 0; i < 25; i++) {
 
     const x =
@@ -334,59 +345,52 @@ for (let i = 0; i < 25; i++) {
     }
 }
 
+
 // ==========================================
 // PLAYER
 // ==========================================
 
 const player = new THREE.Group();
 
-const bodyGeometry =
-    new THREE.CapsuleGeometry(
-        0.55,
-        1.55,
-        1.5,
-        16
-    );
 
-const bodyMaterial =
-    new THREE.MeshStandardMaterial({
-        color: 0x7b9c83
-    });
-
+// Body
 const body =
     new THREE.Mesh(
-        bodyGeometry,
-        bodyMaterial
+        new THREE.CylinderGeometry(
+            0.55,
+            0.55,
+            1.5,
+            16
+        ),
+        new THREE.MeshStandardMaterial({
+            color: 0x7b9c83
+        })
     );
 
 body.position.y = 1.1;
 
 player.add(body);
 
+
 // Head
-
-const headGeometry =
-    new THREE.SphereGeometry(
-        0.55,
-        16,
-        16
-    );
-
-const headMaterial =
-    new THREE.MeshStandardMaterial({
-        color: 0xc98d68
-    });
-
 const head =
     new THREE.Mesh(
-        headGeometry,
-        headMaterial
+        new THREE.SphereGeometry(
+            0.55,
+            16,
+            16
+        ),
+        new THREE.MeshStandardMaterial({
+            color: 0xc98d68
+        })
     );
 
 head.position.y = 2.3;
 
 player.add(head);
 
+
+// Starting position
 player.position.set(
     0,
     0,
@@ -394,6 +398,7 @@ player.position.set(
 );
 
 scene.add(player);
+
 
 // ==========================================
 // MOVEMENT
@@ -404,20 +409,27 @@ const keys = {};
 document.addEventListener(
     "keydown",
     function(event) {
+
         keys[event.key.toLowerCase()] = true;
+
     }
 );
+
 
 document.addEventListener(
     "keyup",
     function(event) {
+
         keys[event.key.toLowerCase()] = false;
+
     }
 );
 
-const speed = 0.12;
 
 function movePlayer() {
+
+    const speed = 0.12;
+
 
     if (
         keys["w"] ||
@@ -426,6 +438,7 @@ function movePlayer() {
         player.position.z -= speed;
     }
 
+
     if (
         keys["s"] ||
         keys["arrowdown"]
@@ -433,12 +446,14 @@ function movePlayer() {
         player.position.z += speed;
     }
 
+
     if (
         keys["a"] ||
         keys["arrowleft"]
     ) {
         player.position.x -= speed;
     }
+
 
     if (
         keys["d"] ||
@@ -449,8 +464,9 @@ function movePlayer() {
 
 }
 
+
 // ==========================================
-// CAMERA FOLLOW
+// CAMERA
 // ==========================================
 
 function updateCamera() {
@@ -461,33 +477,23 @@ function updateCamera() {
     const targetZ =
         player.position.z + 10;
 
+
     camera.position.x +=
         (targetX - camera.position.x) * 0.08;
 
+
     camera.position.z +=
         (targetZ - camera.position.z) * 0.08;
+
 
     camera.lookAt(
         player.position.x,
         1,
         player.position.z
     );
+
 }
 
-// ==========================================
-// STARS
-// ==========================================
-
-let stars = 0;
-
-function collectStar() {
-
-    stars++;
-
-    document.getElementById(
-        "stars"
-    ).textContent = stars;
-}
 
 // ==========================================
 // GAME LOOP
@@ -495,9 +501,7 @@ function collectStar() {
 
 function animate() {
 
-    requestAnimationFrame(
-        animate
-    );
+    requestAnimationFrame(animate);
 
     movePlayer();
 
@@ -507,9 +511,11 @@ function animate() {
         scene,
         camera
     );
+
 }
 
 animate();
+
 
 // ==========================================
 // RESIZE
@@ -529,18 +535,17 @@ window.addEventListener(
             window.innerWidth,
             window.innerHeight
         );
+
     }
 );
 
+
 // ==========================================
-// LOADING SCREEN
+// START GAME
 // ==========================================
 
-setTimeout(function() {
+hideLoading();
 
-    document.getElementById(
-        "loadingScreen"
-    ).style.display = "none";
-
-}, 1200);
-```
+console.log(
+    "🌙 Little Explorers 3D world loaded!"
+);

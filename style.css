@@ -1,0 +1,44 @@
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#dcefe8;color:#26352d}
+button{font:inherit;cursor:pointer;border:0}
+#game{position:fixed;inset:0}
+#game canvas{display:block}
+#loading{position:fixed;inset:0;display:grid;place-items:center;background:#f4ead8;z-index:20;font-size:1.2rem}
+.hidden{display:none!important}
+.screen{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:linear-gradient(#dff4f0cc,#f5ead4ee)}
+.start-card{width:min(92vw,540px);padding:38px 30px;text-align:center;border-radius:32px;background:#fffaf0ee;box-shadow:0 20px 70px #38534a33;border:3px solid #ffffff}
+.moon{font-size:4rem}
+h1{font-size:clamp(2.2rem,8vw,4rem);margin:5px 0;color:#176653}
+h2{margin:0 0 14px;color:#8b5d35}
+.start-card p{font-size:1.05rem;line-height:1.55}
+.big-btn{background:#2f8c52;color:#fff;padding:14px 24px;border-radius:18px;font-weight:800;box-shadow:0 7px 0 #21683b;transition:.15s}
+.big-btn:active{transform:translateY(5px);box-shadow:0 2px 0 #21683b}
+.tiny{font-size:.78rem!important;color:#69746d}
+#hud{position:fixed;top:14px;left:14px;right:14px;z-index:5;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+#hud>*{pointer-events:auto}
+.brand,.stats{background:#fffaf0e8;border:2px solid #ffffff;border-radius:18px;padding:9px 13px;box-shadow:0 6px 20px #26352d1c;font-weight:800}
+.stats{display:flex;gap:15px}
+#menuBtn{background:#fffaf0e8;border-radius:16px;padding:10px 14px;font-size:1.2rem}
+.panel{position:fixed;z-index:8;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,560px);max-height:86vh;overflow:auto;background:#fffaf0f5;border:3px solid #fff;border-radius:28px;padding:28px;box-shadow:0 25px 80px #182a2350}
+.panel h2{text-align:center;color:#176653;font-size:1.8rem}
+.close{position:absolute;right:13px;top:10px;background:#ead7c2;border-radius:50%;width:34px;height:34px;font-size:1.4rem}
+.world-btn{width:100%;margin:7px 0;padding:14px;border-radius:16px;text-align:left;background:#eaf5ee;color:#28533f;font-weight:800}
+.world-btn:hover{background:#d8eddf}
+.tip{margin-top:15px;padding:12px;border-radius:14px;background:#f2e7d5;font-size:.9rem}
+.message{position:fixed;z-index:7;left:50%;bottom:95px;transform:translateX(-50%);max-width:min(90vw,650px);padding:13px 18px;border-radius:18px;background:#fffaf0ee;border:2px solid #fff;box-shadow:0 10px 35px #1e302b33;text-align:center;font-weight:700}
+.quest{position:fixed;z-index:6;left:50%;top:82px;transform:translateX(-50%);width:min(92vw,680px);display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 14px;background:#fffaf0e8;border-radius:18px;box-shadow:0 7px 25px #233c331f}
+.quest span{display:block;font-weight:500;font-size:.85rem}
+.quest button{background:#176653;color:#fff;border-radius:12px;padding:8px 12px;font-weight:800}
+#touchControls{position:fixed;z-index:6;left:18px;bottom:18px}
+.touch-row{display:flex;justify-content:center;gap:7px;margin:4px}
+.touch-row button{width:54px;height:54px;border-radius:17px;background:#fffaf0cc;border:2px solid #fff;box-shadow:0 5px 15px #233c3333;font-weight:900}
+.story-card{line-height:1.6}
+.story-card .emoji{font-size:3rem;text-align:center}
+.story-card h2{text-align:center}
+.story-card .lesson{padding:13px;border-radius:15px;background:#eaf5ee;margin-top:14px}
+@media(max-width:700px){
+ .brand{font-size:.82rem}.stats{font-size:.85rem}
+ .quest{top:74px}.quest span{max-width:70vw}
+ #touchControls{display:block}
+}
+@media(min-width:701px){#touchControls{display:none!important}}

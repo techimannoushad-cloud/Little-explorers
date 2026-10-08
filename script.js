@@ -343,9 +343,9 @@ const player = new THREE.Group();
 const bodyGeometry =
     new THREE.CapsuleGeometry(
         0.55,
-        1.2,
-        4,
-        8
+        1.55,
+        1.5,
+        16
     );
 
 const bodyMaterial =

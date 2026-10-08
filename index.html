@@ -1,160 +1,66 @@
+ ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Aisha & Zayn Adventures</title>
+    <title>Little Explorers 🕌</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- CHARACTER CREATION SCREEN -->
-    <section id="characterScreen">
-
-        <div class="title">
-            <h1>✨ Aisha & Zayn Adventures ✨</h1>
-            <p>Create your twins and begin your adventure!</p>
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        <div class="loading-box">
+            <h1>🌙 Little Explorers</h1>
+            <p>Preparing your adventure...</p>
+            <div class="loader"></div>
         </div>
+    </div>
 
-        <div class="characters">
+    <!-- Game UI -->
+    <div id="gameUI">
 
-            <!-- AISHA -->
-            <div class="character-card">
-
-                <h2>🧕 Aisha</h2>
-
-                <div id="aishaPreview" class="character-preview aisha">
-                    <div class="head">
-                        <div class="eye left-eye"></div>
-                        <div class="eye right-eye"></div>
-                        <div class="smile"></div>
-                    </div>
-
-                    <div class="hijab"></div>
-                    <div class="body"></div>
-                </div>
-
-                <label>Hijab</label>
-
-                <div class="options">
-                    <button onclick="changeAishaHijab('#48764b')">🌿</button>
-                    <button onclick="changeAishaHijab('#d9a441')">🌟</button>
-                    <button onclick="changeAishaHijab('#8b5e83')">💜</button>
-                    <button onclick="changeAishaHijab('#d97979')">🌸</button>
-                    <button onclick="changeAishaHijab('#4d7399')">💙</button>
-                </div>
-
-                <label>Outfit</label>
-
-                <div class="options">
-                    <button onclick="changeAishaOutfit('#f2d7a0')">🟡</button>
-                    <button onclick="changeAishaOutfit('#8da889')">🟢</button>
-                    <button onclick="changeAishaOutfit('#b88eb8')">🟣</button>
-                    <button onclick="changeAishaOutfit('#d88f8f')">🌸</button>
-                </div>
-
+        <div class="top-bar">
+            <div class="game-title">
+                🌙 Little Explorers
             </div>
-
-
-            <!-- ZAYN -->
-            <div class="character-card">
-
-                <h2>👦 Zayn</h2>
-
-                <div id="zaynPreview" class="character-preview zayn">
-
-                    <div class="hair"></div>
-
-                    <div class="head">
-                        <div class="eye left-eye"></div>
-                        <div class="eye right-eye"></div>
-                        <div class="smile"></div>
-                    </div>
-
-                    <div class="body"></div>
-
-                </div>
-
-                <label>Hair</label>
-
-                <div class="options">
-                    <button onclick="changeZaynHair('#2b211b')">🟤</button>
-                    <button onclick="changeZaynHair('#4d3828')">🤎</button>
-                    <button onclick="changeZaynHair('#111111')">⚫</button>
-                </div>
-
-                <label>Outfit</label>
-
-                <div class="options">
-                    <button onclick="changeZaynOutfit('#53789d')">💙</button>
-                    <button onclick="changeZaynOutfit('#71946b')">🟢</button>
-                    <button onclick="changeZaynOutfit('#d59a45')">🟠</button>
-                    <button onclick="changeZaynOutfit('#9a6f9c')">💜</button>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <button id="startButton" onclick="startAdventure()">
-            🚀 START ADVENTURE
-        </button>
-
-    </section>
-
-
-    <!-- GAME SCREEN -->
-    <section id="gameScreen">
-
-        <div id="gameHUD">
-
-            <h1>🌿 Aisha & Zayn's World</h1>
 
             <div class="stats">
-                ⭐ Stars: <span id="stars">0</span>
-                ❤️ Hearts: <span id="hearts">3</span>
+                ⭐ <span id="stars">0</span>
             </div>
-
         </div>
 
-        <div id="gameWorld">
-
-            <div class="sun">☀️</div>
-
-            <div class="cloud cloud1">☁️</div>
-            <div class="cloud cloud2">☁️</div>
-
-            <div class="mosque">
-                🕌
-            </div>
-
-            <div class="tree tree1">🌳</div>
-            <div class="tree tree2">🌳</div>
-            <div class="tree tree3">🌳</div>
-
-            <div id="playerAisha" class="game-character">
-                🧕
-            </div>
-
-            <div id="playerZayn" class="game-character">
-                👦
-            </div>
-
-            <div class="welcome">
-                <h2>Welcome to the village!</h2>
-                <p>Use WASD or the arrow keys to explore.</p>
-            </div>
-
+        <div id="characterInfo">
+            <h2 id="characterName">Explorer</h2>
+            <p>Use WASD or arrow keys to explore!</p>
         </div>
 
-    </section>
+    </div>
 
+    <!-- 3D Game -->
+    <canvas id="gameCanvas"></canvas>
 
+    <!-- Mobile Controls -->
+    <div id="mobileControls">
+
+        <button class="control up" data-key="ArrowUp">▲</button>
+
+        <button class="control left" data-key="ArrowLeft">◀</button>
+        <button class="control down" data-key="ArrowDown">▼</button>
+        <button class="control right" data-key="ArrowRight">▶</button>
+
+    </div>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Your Game -->
     <script src="script.js"></script>
 
 </body>
 </html>
+```

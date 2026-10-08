@@ -1,44 +1,551 @@
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#dcefe8;color:#26352d}
-button{font:inherit;cursor:pointer;border:0}
-#game{position:fixed;inset:0}
-#game canvas{display:block}
-#loading{position:fixed;inset:0;display:grid;place-items:center;background:#f4ead8;z-index:20;font-size:1.2rem}
-.hidden{display:none!important}
-.screen{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:linear-gradient(#dff4f0cc,#f5ead4ee)}
-.start-card{width:min(92vw,540px);padding:38px 30px;text-align:center;border-radius:32px;background:#fffaf0ee;box-shadow:0 20px 70px #38534a33;border:3px solid #ffffff}
-.moon{font-size:4rem}
-h1{font-size:clamp(2.2rem,8vw,4rem);margin:5px 0;color:#176653}
-h2{margin:0 0 14px;color:#8b5d35}
-.start-card p{font-size:1.05rem;line-height:1.55}
-.big-btn{background:#2f8c52;color:#fff;padding:14px 24px;border-radius:18px;font-weight:800;box-shadow:0 7px 0 #21683b;transition:.15s}
-.big-btn:active{transform:translateY(5px);box-shadow:0 2px 0 #21683b}
-.tiny{font-size:.78rem!important;color:#69746d}
-#hud{position:fixed;top:14px;left:14px;right:14px;z-index:5;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
-#hud>*{pointer-events:auto}
-.brand,.stats{background:#fffaf0e8;border:2px solid #ffffff;border-radius:18px;padding:9px 13px;box-shadow:0 6px 20px #26352d1c;font-weight:800}
-.stats{display:flex;gap:15px}
-#menuBtn{background:#fffaf0e8;border-radius:16px;padding:10px 14px;font-size:1.2rem}
-.panel{position:fixed;z-index:8;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,560px);max-height:86vh;overflow:auto;background:#fffaf0f5;border:3px solid #fff;border-radius:28px;padding:28px;box-shadow:0 25px 80px #182a2350}
-.panel h2{text-align:center;color:#176653;font-size:1.8rem}
-.close{position:absolute;right:13px;top:10px;background:#ead7c2;border-radius:50%;width:34px;height:34px;font-size:1.4rem}
-.world-btn{width:100%;margin:7px 0;padding:14px;border-radius:16px;text-align:left;background:#eaf5ee;color:#28533f;font-weight:800}
-.world-btn:hover{background:#d8eddf}
-.tip{margin-top:15px;padding:12px;border-radius:14px;background:#f2e7d5;font-size:.9rem}
-.message{position:fixed;z-index:7;left:50%;bottom:95px;transform:translateX(-50%);max-width:min(90vw,650px);padding:13px 18px;border-radius:18px;background:#fffaf0ee;border:2px solid #fff;box-shadow:0 10px 35px #1e302b33;text-align:center;font-weight:700}
-.quest{position:fixed;z-index:6;left:50%;top:82px;transform:translateX(-50%);width:min(92vw,680px);display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 14px;background:#fffaf0e8;border-radius:18px;box-shadow:0 7px 25px #233c331f}
-.quest span{display:block;font-weight:500;font-size:.85rem}
-.quest button{background:#176653;color:#fff;border-radius:12px;padding:8px 12px;font-weight:800}
-#touchControls{position:fixed;z-index:6;left:18px;bottom:18px}
-.touch-row{display:flex;justify-content:center;gap:7px;margin:4px}
-.touch-row button{width:54px;height:54px;border-radius:17px;background:#fffaf0cc;border:2px solid #fff;box-shadow:0 5px 15px #233c3333;font-weight:900}
-.story-card{line-height:1.6}
-.story-card .emoji{font-size:3rem;text-align:center}
-.story-card h2{text-align:center}
-.story-card .lesson{padding:13px;border-radius:15px;background:#eaf5ee;margin-top:14px}
-@media(max-width:700px){
- .brand{font-size:.82rem}.stats{font-size:.85rem}
- .quest{top:74px}.quest span{max-width:70vw}
- #touchControls{display:block}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
-@media(min-width:701px){#touchControls{display:none!important}}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #eaf4df;
+    color: #26382a;
+    overflow-x: hidden;
+}
+
+
+/* =========================
+   CHARACTER SCREEN
+========================= */
+
+#characterScreen {
+    min-height: 100vh;
+    padding: 40px 20px;
+    text-align: center;
+    background:
+        linear-gradient(
+            rgba(232, 245, 220, 0.92),
+            rgba(255, 244, 216, 0.95)
+        );
+}
+
+.title h1 {
+    font-size: clamp(30px, 6vw, 55px);
+    margin-bottom: 10px;
+}
+
+.title p {
+    font-size: 18px;
+    margin-bottom: 35px;
+}
+
+
+.characters {
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+    flex-wrap: wrap;
+}
+
+
+.character-card {
+    width: 330px;
+    min-height: 520px;
+
+    background: rgba(255,255,255,0.88);
+
+    border-radius: 30px;
+
+    padding: 25px;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,0.12);
+}
+
+
+.character-card h2 {
+    margin-bottom: 15px;
+}
+
+
+.character-preview {
+    width: 220px;
+    height: 270px;
+
+    margin: 10px auto 20px;
+
+    position: relative;
+}
+
+
+/* =========================
+   CHARACTER HEAD
+========================= */
+
+.head {
+    position: absolute;
+
+    width: 120px;
+    height: 125px;
+
+    background: #b97952;
+
+    border-radius: 50%;
+
+    left: 50%;
+    transform: translateX(-50%);
+
+    top: 45px;
+
+    z-index: 2;
+}
+
+
+.eye {
+    position: absolute;
+
+    width: 14px;
+    height: 18px;
+
+    background: #231b17;
+
+    border-radius: 50%;
+
+    top: 50px;
+}
+
+.left-eye {
+    left: 30px;
+}
+
+.right-eye {
+    right: 30px;
+}
+
+
+.smile {
+    position: absolute;
+
+    width: 30px;
+    height: 12px;
+
+    border-bottom: 3px solid #5c3024;
+
+    border-radius: 50%;
+
+    left: 45px;
+    top: 80px;
+}
+
+
+/* =========================
+   AISHA
+========================= */
+
+.aisha .hijab {
+
+    position: absolute;
+
+    width: 170px;
+    height: 190px;
+
+    background: #48764b;
+
+    border-radius: 90px 90px 55px 55px;
+
+    left: 50%;
+    transform: translateX(-50%);
+
+    top: 10px;
+
+    z-index: 1;
+}
+
+
+.aisha .body {
+
+    position: absolute;
+
+    width: 140px;
+    height: 100px;
+
+    background: #8da889;
+
+    border-radius: 40px 40px 15px 15px;
+
+    left: 50%;
+    transform: translateX(-50%);
+
+    top: 170px;
+}
+
+
+/* =========================
+   ZAYN
+========================= */
+
+.zayn .hair {
+
+    position: absolute;
+
+    width: 130px;
+    height: 60px;
+
+    background: #2b211b;
+
+    border-radius: 70px 70px 20px 20px;
+
+    left: 50%;
+    transform: translateX(-50%);
+
+    top: 35px;
+
+    z-index: 3;
+}
+
+
+.zayn .body {
+
+    position: absolute;
+
+    width: 140px;
+    height: 100px;
+
+    background: #53789d;
+
+    border-radius: 40px 40px 15px 15px;
+
+    left: 50%;
+    transform: translateX(-50%);
+
+    top: 170px;
+}
+
+
+/* =========================
+   OPTIONS
+========================= */
+
+label {
+    display: block;
+
+    font-weight: bold;
+
+    margin-top: 15px;
+    margin-bottom: 8px;
+}
+
+
+.options {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+}
+
+
+.options button {
+
+    width: 45px;
+    height: 45px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #f1f1f1;
+
+    cursor: pointer;
+
+    font-size: 20px;
+
+    transition: 0.2s;
+}
+
+
+.options button:hover {
+
+    transform: scale(1.15);
+
+    background: #dcebd2;
+}
+
+
+/* =========================
+   START BUTTON
+========================= */
+
+#startButton {
+
+    margin-top: 40px;
+
+    padding: 18px 35px;
+
+    border: none;
+
+    border-radius: 40px;
+
+    background: #48764b;
+
+    color: white;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+
+    transition: 0.2s;
+}
+
+
+#startButton:hover {
+
+    transform: scale(1.05);
+
+    background: #365d3b;
+}
+
+
+/* =========================
+   GAME SCREEN
+========================= */
+
+#gameScreen {
+
+    display: none;
+
+    min-height: 100vh;
+}
+
+
+/* HUD */
+
+#gameHUD {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    padding: 15px 25px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    background: rgba(255,255,255,0.88);
+
+    z-index: 100;
+}
+
+
+.stats {
+
+    font-weight: bold;
+
+    font-size: 18px;
+}
+
+
+/* =========================
+   WORLD
+========================= */
+
+#gameWorld {
+
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+
+    background:
+
+        linear-gradient(
+            #9ed8f0 0%,
+            #ccefc5 55%,
+            #76ad62 56%,
+            #659c55 100%
+        );
+}
+
+
+.sun {
+
+    position: absolute;
+
+    top: 100px;
+    right: 12%;
+
+    font-size: 70px;
+
+    animation: float 4s ease-in-out infinite;
+}
+
+
+.cloud {
+
+    position: absolute;
+
+    font-size: 70px;
+
+    opacity: 0.8;
+
+    animation: moveCloud 25s linear infinite;
+}
+
+
+.cloud1 {
+    top: 100px;
+    left: -100px;
+}
+
+.cloud2 {
+    top: 200px;
+    left: -300px;
+
+    animation-delay: 8s;
+}
+
+
+@keyframes moveCloud {
+
+    from {
+        transform: translateX(-200px);
+    }
+
+    to {
+        transform: translateX(120vw);
+    }
+}
+
+
+@keyframes float {
+
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+
+/* MOSQUE */
+
+.mosque {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 38%;
+
+    transform: translate(-50%, -50%);
+
+    font-size: 130px;
+}
+
+
+/* TREES */
+
+.tree {
+
+    position: absolute;
+
+    font-size: 90px;
+}
+
+
+.tree1 {
+    left: 10%;
+    bottom: 15%;
+}
+
+.tree2 {
+    right: 12%;
+    bottom: 18%;
+}
+
+.tree3 {
+    left: 75%;
+    bottom: 45%;
+}
+
+
+/* CHARACTERS */
+
+.game-character {
+
+    position: absolute;
+
+    font-size: 65px;
+
+    left: 45%;
+    top: 65%;
+
+    transition: 0.12s linear;
+
+    z-index: 10;
+}
+
+
+#playerZayn {
+
+    left: calc(45% + 75px);
+
+}
+
+
+/* WELCOME */
+
+.welcome {
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 30px;
+
+    transform: translateX(-50%);
+
+    background: rgba(255,255,255,0.9);
+
+    padding: 15px 25px;
+
+    border-radius: 20px;
+
+    text-align: center;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    #gameHUD {
+
+        flex-direction: column;
+
+        gap: 5px;
+
+    }
+
+    .character-card {
+
+        width: 90%;
+
+    }
+
+}

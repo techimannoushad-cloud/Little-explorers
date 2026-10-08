@@ -1,551 +1,186 @@
+```css
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: #eaf4df;
-    color: #26382a;
-    overflow-x: hidden;
+    background: #87ceeb;
 }
 
+/* 3D Canvas */
 
-/* =========================
-   CHARACTER SCREEN
-========================= */
-
-#characterScreen {
-    min-height: 100vh;
-    padding: 40px 20px;
-    text-align: center;
-    background:
-        linear-gradient(
-            rgba(232, 245, 220, 0.92),
-            rgba(255, 244, 216, 0.95)
-        );
+#gameCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
-.title h1 {
-    font-size: clamp(30px, 6vw, 55px);
-    margin-bottom: 10px;
-}
+/* Loading Screen */
 
-.title p {
-    font-size: 18px;
-    margin-bottom: 35px;
-}
-
-
-.characters {
+#loadingScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
     display: flex;
     justify-content: center;
-    gap: 35px;
-    flex-wrap: wrap;
+    align-items: center;
+    background: #f4ead5;
 }
 
-
-.character-card {
-    width: 330px;
-    min-height: 520px;
-
-    background: rgba(255,255,255,0.88);
-
-    border-radius: 30px;
-
-    padding: 25px;
-
-    box-shadow:
-        0 15px 40px rgba(0,0,0,0.12);
+.loading-box {
+    text-align: center;
 }
 
-
-.character-card h2 {
+.loading-box h1 {
+    font-size: 42px;
     margin-bottom: 15px;
 }
 
-
-.character-preview {
-    width: 220px;
-    height: 270px;
-
-    margin: 10px auto 20px;
-
-    position: relative;
-}
-
-
-/* =========================
-   CHARACTER HEAD
-========================= */
-
-.head {
-    position: absolute;
-
-    width: 120px;
-    height: 125px;
-
-    background: #b97952;
-
-    border-radius: 50%;
-
-    left: 50%;
-    transform: translateX(-50%);
-
-    top: 45px;
-
-    z-index: 2;
-}
-
-
-.eye {
-    position: absolute;
-
-    width: 14px;
-    height: 18px;
-
-    background: #231b17;
-
-    border-radius: 50%;
-
-    top: 50px;
-}
-
-.left-eye {
-    left: 30px;
-}
-
-.right-eye {
-    right: 30px;
-}
-
-
-.smile {
-    position: absolute;
-
-    width: 30px;
-    height: 12px;
-
-    border-bottom: 3px solid #5c3024;
-
-    border-radius: 50%;
-
-    left: 45px;
-    top: 80px;
-}
-
-
-/* =========================
-   AISHA
-========================= */
-
-.aisha .hijab {
-
-    position: absolute;
-
-    width: 170px;
-    height: 190px;
-
-    background: #48764b;
-
-    border-radius: 90px 90px 55px 55px;
-
-    left: 50%;
-    transform: translateX(-50%);
-
-    top: 10px;
-
-    z-index: 1;
-}
-
-
-.aisha .body {
-
-    position: absolute;
-
-    width: 140px;
-    height: 100px;
-
-    background: #8da889;
-
-    border-radius: 40px 40px 15px 15px;
-
-    left: 50%;
-    transform: translateX(-50%);
-
-    top: 170px;
-}
-
-
-/* =========================
-   ZAYN
-========================= */
-
-.zayn .hair {
-
-    position: absolute;
-
-    width: 130px;
-    height: 60px;
-
-    background: #2b211b;
-
-    border-radius: 70px 70px 20px 20px;
-
-    left: 50%;
-    transform: translateX(-50%);
-
-    top: 35px;
-
-    z-index: 3;
-}
-
-
-.zayn .body {
-
-    position: absolute;
-
-    width: 140px;
-    height: 100px;
-
-    background: #53789d;
-
-    border-radius: 40px 40px 15px 15px;
-
-    left: 50%;
-    transform: translateX(-50%);
-
-    top: 170px;
-}
-
-
-/* =========================
-   OPTIONS
-========================= */
-
-label {
-    display: block;
-
-    font-weight: bold;
-
-    margin-top: 15px;
-    margin-bottom: 8px;
-}
-
-
-.options {
-    display: flex;
-
-    justify-content: center;
-
-    gap: 8px;
-
-    flex-wrap: wrap;
-}
-
-
-.options button {
-
-    width: 45px;
-    height: 45px;
-
-    border: none;
-
-    border-radius: 50%;
-
-    background: #f1f1f1;
-
-    cursor: pointer;
-
-    font-size: 20px;
-
-    transition: 0.2s;
-}
-
-
-.options button:hover {
-
-    transform: scale(1.15);
-
-    background: #dcebd2;
-}
-
-
-/* =========================
-   START BUTTON
-========================= */
-
-#startButton {
-
-    margin-top: 40px;
-
-    padding: 18px 35px;
-
-    border: none;
-
-    border-radius: 40px;
-
-    background: #48764b;
-
-    color: white;
-
-    font-size: 20px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    box-shadow: 0 8px 20px rgba(0,0,0,0.18);
-
-    transition: 0.2s;
-}
-
-
-#startButton:hover {
-
-    transform: scale(1.05);
-
-    background: #365d3b;
-}
-
-
-/* =========================
-   GAME SCREEN
-========================= */
-
-#gameScreen {
-
-    display: none;
-
-    min-height: 100vh;
-}
-
-
-/* HUD */
-
-#gameHUD {
-
-    position: fixed;
-
-    top: 0;
-    left: 0;
-
-    width: 100%;
-
-    padding: 15px 25px;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    background: rgba(255,255,255,0.88);
-
-    z-index: 100;
-}
-
-
-.stats {
-
-    font-weight: bold;
-
+.loading-box p {
     font-size: 18px;
 }
 
-
-/* =========================
-   WORLD
-========================= */
-
-#gameWorld {
-
-    position: relative;
-
-    width: 100vw;
-    height: 100vh;
-
-    overflow: hidden;
-
-    background:
-
-        linear-gradient(
-            #9ed8f0 0%,
-            #ccefc5 55%,
-            #76ad62 56%,
-            #659c55 100%
-        );
+.loader {
+    width: 45px;
+    height: 45px;
+    border: 5px solid #ddd;
+    border-top: 5px solid #4b8063;
+    border-radius: 50%;
+    margin: 25px auto;
+    animation: spin 1s linear infinite;
 }
 
-
-.sun {
-
-    position: absolute;
-
-    top: 100px;
-    right: 12%;
-
-    font-size: 70px;
-
-    animation: float 4s ease-in-out infinite;
-}
-
-
-.cloud {
-
-    position: absolute;
-
-    font-size: 70px;
-
-    opacity: 0.8;
-
-    animation: moveCloud 25s linear infinite;
-}
-
-
-.cloud1 {
-    top: 100px;
-    left: -100px;
-}
-
-.cloud2 {
-    top: 200px;
-    left: -300px;
-
-    animation-delay: 8s;
-}
-
-
-@keyframes moveCloud {
-
-    from {
-        transform: translateX(-200px);
-    }
-
+@keyframes spin {
     to {
-        transform: translateX(120vw);
+        transform: rotate(360deg);
     }
 }
 
+/* Game UI */
 
-@keyframes float {
-
-    0%, 100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-15px);
-    }
-}
-
-
-/* MOSQUE */
-
-.mosque {
-
-    position: absolute;
-
-    left: 50%;
-
-    top: 38%;
-
-    transform: translate(-50%, -50%);
-
-    font-size: 130px;
-}
-
-
-/* TREES */
-
-.tree {
-
-    position: absolute;
-
-    font-size: 90px;
-}
-
-
-.tree1 {
-    left: 10%;
-    bottom: 15%;
-}
-
-.tree2 {
-    right: 12%;
-    bottom: 18%;
-}
-
-.tree3 {
-    left: 75%;
-    bottom: 45%;
-}
-
-
-/* CHARACTERS */
-
-.game-character {
-
-    position: absolute;
-
-    font-size: 65px;
-
-    left: 45%;
-    top: 65%;
-
-    transition: 0.12s linear;
-
+#gameUI {
+    position: fixed;
+    inset: 0;
     z-index: 10;
+    pointer-events: none;
 }
 
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-#playerZayn {
+    padding: 18px 25px;
 
-    left: calc(45% + 75px);
-
+    color: white;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 
+.game-title {
+    font-size: 24px;
+    font-weight: bold;
+}
 
-/* WELCOME */
+.stats {
+    font-size: 22px;
+}
 
-.welcome {
+#characterInfo {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
 
+    padding: 15px 20px;
+
+    background: rgba(255,255,255,0.85);
+    border-radius: 15px;
+
+    color: #333;
+}
+
+#characterInfo h2 {
+    margin-bottom: 5px;
+}
+
+/* Mobile Controls */
+
+#mobileControls {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+
+    width: 150px;
+    height: 150px;
+
+    z-index: 20;
+    display: none;
+}
+
+.control {
     position: absolute;
 
-    left: 50%;
-    bottom: 30px;
+    width: 48px;
+    height: 48px;
 
-    transform: translateX(-50%);
+    border: none;
+    border-radius: 14px;
 
-    background: rgba(255,255,255,0.9);
+    background: rgba(255,255,255,0.75);
 
-    padding: 15px 25px;
-
-    border-radius: 20px;
-
-    text-align: center;
-
-    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    font-size: 20px;
 }
 
+.control:active {
+    transform: scale(0.9);
+}
 
-/* MOBILE */
+.up {
+    top: 0;
+    left: 51px;
+}
+
+.left {
+    top: 51px;
+    left: 0;
+}
+
+.down {
+    bottom: 0;
+    left: 51px;
+}
+
+.right {
+    top: 51px;
+    right: 0;
+}
+
+/* Mobile */
 
 @media (max-width: 700px) {
 
-    #gameHUD {
-
-        flex-direction: column;
-
-        gap: 5px;
-
+    .game-title {
+        font-size: 18px;
     }
 
-    .character-card {
-
-        width: 90%;
-
+    #mobileControls {
+        display: block;
     }
 
+    #characterInfo {
+        font-size: 13px;
+        padding: 10px 15px;
+    }
 }
+```

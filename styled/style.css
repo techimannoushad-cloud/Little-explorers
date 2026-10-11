@@ -1,0 +1,257 @@
+```css
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+}
+
+body {
+  background: #9de5ff;
+}
+
+#game {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  outline: none;
+}
+
+.topbar {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.logo {
+  color: #fffdf0;
+  background: #8d5b3e;
+  border: 4px solid #bc8653;
+  border-radius: 18px;
+  padding: 12px 18px;
+  font-size: clamp(18px, 3vw, 28px);
+  font-weight: 900;
+  text-shadow: 1px 2px 2px #64452e;
+  box-shadow: 0 5px 0 #67462f;
+}
+
+.badge {
+  color: #39614a;
+  background: #fffbea;
+  border: 3px solid #d6eeb5;
+  border-radius: 30px;
+  padding: 11px 15px;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.welcome {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #23583b33;
+  padding: 20px;
+  transition: opacity 0.4s;
+}
+
+.welcome.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.welcome-card {
+  width: min(420px, 92vw);
+  padding: 28px;
+  text-align: center;
+  background: #fff9e8;
+  border: 5px solid #ffffff;
+  border-radius: 30px;
+  box-shadow: 0 12px 0 #d9cba5;
+}
+
+.moon {
+  font-size: 48px;
+}
+
+.welcome-card h1 {
+  color: #39865a;
+  margin: 10px 0;
+  font-size: clamp(25px, 5vw, 36px);
+}
+
+.welcome-card p {
+  color: #6c705b;
+  line-height: 1.6;
+}
+
+button {
+  font-family: inherit;
+  font-weight: 900;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#startButton {
+  background: #56bd83;
+  color: white;
+  border: 0;
+  border-radius: 18px;
+  padding: 15px 25px;
+  font-size: 17px;
+  box-shadow: 0 5px 0 #328455;
+  margin-top: 10px;
+}
+
+#startButton:active,
+.bottom-menu button:active {
+  transform: translateY(3px);
+  box-shadow: none;
+}
+
+.hint {
+  position: absolute;
+  left: 50%;
+  bottom: 106px;
+  transform: translateX(-50%);
+  padding: 9px 15px;
+  color: #466149;
+  background: #fffbeaeb;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.bottom-menu {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  width: min(550px, calc(100% - 24px));
+  border: 4px solid #fffdf3;
+  border-radius: 25px;
+  background: #f8e9cdeF;
+  box-shadow: 0 6px 0 #d9c49d;
+}
+
+.bottom-menu button {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 4px;
+  border: 0;
+  border-radius: 16px;
+  background: #60c991;
+  color: white;
+  font-size: 22px;
+  box-shadow: 0 4px 0 #379967;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.bottom-menu button:nth-child(2) {
+  background: #55b9e8;
+  box-shadow: 0 4px 0 #3189b7;
+}
+
+.bottom-menu button:nth-child(3) {
+  background: #ac83ed;
+  box-shadow: 0 4px 0 #8058bf;
+}
+
+.bottom-menu button:nth-child(4) {
+  background: #ffb950;
+  box-shadow: 0 4px 0 #d88c2c;
+}
+
+.bottom-menu span {
+  font-size: 12px;
+}
+
+#message {
+  position: absolute;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 30px);
+  padding: 12px 18px;
+  border-radius: 18px;
+  background: #fffbea;
+  color: #39614a;
+  font-weight: bold;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+#message.visible {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .topbar {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+  }
+
+  .logo {
+    padding: 10px;
+    font-size: 17px;
+  }
+
+  .badge {
+    padding: 8px;
+    font-size: 10px;
+  }
+
+  .hint {
+    bottom: 102px;
+    font-size: 10px;
+  }
+
+  .bottom-menu {
+    bottom: 10px;
+    gap: 6px;
+    padding: 7px;
+  }
+
+  .bottom-menu button {
+    font-size: 19px;
+  }
+
+  .bottom-menu span {
+    font-size: 10px;
+  }
+}
+```

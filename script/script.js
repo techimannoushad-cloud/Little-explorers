@@ -1,502 +1,305 @@
+
 import * as THREE from
   "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js";
 
-// ===================================
-// LITTLE EXPLORERS - 3D WORLD
-// ===================================
+const game = document.querySelector("#game");
 
-const container = document.querySelector("#game");
+if (!game) {
+  throw new Error('Missing #game container in index.html');
+}
 
+// SCENE
 const scene = new THREE.Scene();
-scene.background = new THREE.Color("#91dcff");
-scene.fog = new THREE.Fog("#91dcff", 38, 100);
+scene.background = new THREE.Color("#65c5ff");
+scene.fog = new THREE.Fog("#a8e0ff", 35, 100);
 
 const camera = new THREE.PerspectiveCamera(
-  55,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  200
+  48, window.innerWidth / window.innerHeight, 0.1, 200
 );
+camera.position.set(0, 11, 22);
+camera.lookAt(0, 2, 0);
 
-const renderer = new THREE.WebGLRenderer({
-  antialias: true
-});
-
-renderer.setSize(window.innerWidth, window.innerHeight);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.7));
+renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.3;
+renderer.domElement.style.position = "absolute";
+renderer.domElement.style.inset = "0";
+renderer.domElement.style.width = "100%";
+renderer.domElement.style.height = "100%";
+renderer.domElement.style.zIndex = "0";
+game.prepend(renderer.domElement);
 
-container.prepend(renderer.domElement);
-
-// ===================================
 // LIGHTING
-// ===================================
+scene.add(new THREE.HemisphereLight("#e7f8ff", "#658b48", 2));
 
-scene.add(new THREE.HemisphereLight("#eafaff", "#63884b", 2));
+const sun = new THREE.DirectionalLight("#fff0c8", 3);
+sun.position.set(-8, 18, 12);
+sun.castShadow = true;
+sun.shadow.mapSize.set(1024, 1024);
+scene.add(sun);
 
-const sunlight = new THREE.DirectionalLight("#fff1d2", 3);
-sunlight.position.set(-12, 25, 12);
-sunlight.castShadow = true;
-sunlight.shadow.mapSize.set(1024, 1024);
-sunlight.shadow.camera.left = -35;
-sunlight.shadow.camera.right = 35;
-sunlight.shadow.camera.top = 35;
-sunlight.shadow.camera.bottom = -35;
-scene.add(sunlight);
+// MATERIAL HELPER
+function mat(color, roughness = 0.85) {
+  return new THREE.MeshStandardMaterial({ color, roughness });
+}
 
-// ===================================
-// MATERIALS AND BRICK BUILDING
-// ===================================
+const green = mat("#68c943");
+const darkGreen = mat("#359b43");
+const wood = mat("#a96032");
+const cream = mat("#fff0d0");
+const blue = mat("#38b9ef");
+const red = mat("#ff6b64");
+const yellow = mat("#ffc447");
+const white = mat("#fffaf0");
+const teal = mat("#14b9a8");
+const pink = mat("#ff91bd");
 
-const mat = (color, roughness = 0.85) =>
-  new THREE.MeshStandardMaterial({ color, roughness });
-
-const grassMat = mat("#80ce63");
-const darkGrass = mat("#52a950");
-const pathMat = mat("#f4ce91");
-const brickMat = mat("#e9a56c");
-const whiteMat = mat("#fff3d8");
-const brownMat = mat("#95603e");
-const greenMat = mat("#36a86a");
-const blueMat = mat("#55bce8");
-const pinkMat = mat("#ff9bb9");
-const yellowMat = mat("#ffd65c");
-
-function box(parent, x, y, z, w, h, d, material, studs = false) {
-  const geometry = new THREE.BoxGeometry(w, h, d);
-  const mesh = new THREE.Mesh(geometry, material);
-
+// BASIC TOY SHAPES
+function block(x, y, z, w, h, d, material, parent = scene) {
+  const mesh = new THREE.Mesh(
+    new THREE.BoxGeometry(w, h, d), material
+  );
   mesh.position.set(x, y, z);
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   parent.add(mesh);
-
-  if (studs && w > 0.5 && d > 0.5) {
-    const studGeo = new THREE.CylinderGeometry(
-      0.105, 0.105, 0.09, 10
-    );
-
-    for (let sx = -w / 2 + 0.24; sx < w / 2 - 0.12; sx += 0.42) {
-      for (let sz = -d / 2 + 0.24; sz < d / 2 - 0.12; sz += 0.42) {
-        const stud = new THREE.Mesh(studGeo, material);
-        stud.position.set(x + sx, y + h / 2 + 0.045, z + sz);
-        stud.castShadow = true;
-        parent.add(stud);
-      }
-    }
-  }
-
   return mesh;
 }
 
-function sphere(parent, x, y, z, radius, material, scale = [1, 1, 1]) {
+function ball(x, y, z, radius, material, parent = scene) {
   const mesh = new THREE.Mesh(
-    new THREE.SphereGeometry(radius, 16, 12),
-    material
+    new THREE.SphereGeometry(radius, 16, 12), material
   );
-
   mesh.position.set(x, y, z);
-  mesh.scale.set(...scale);
   mesh.castShadow = true;
   parent.add(mesh);
   return mesh;
 }
 
-// ===================================
-// GRASS AND PATH
-// ===================================
-
-box(scene, 0, -0.35, -10, 100, 0.6, 100, grassMat);
-
-for (let i = -45; i <= 35; i += 5) {
-  box(scene, -9, 0, i, 0.3, 0.08, 3, darkGrass);
-  box(scene, 9, 0, i + 2, 0.3, 0.08, 3, darkGrass);
-}
-
-// Winding-looking central walkway
-box(scene, 0, 0.015, -7, 5, 0.12, 48, pathMat);
-
-const pathTileColors = [
-  "#f6d7a1", "#edc18a", "#ffe0a7"
-];
-
-for (let z = -29; z < 17; z += 2.1) {
-  box(
-    scene,
-    Math.sin(z * 0.18) * 0.15,
-    0.1,
-    z,
-    1.4,
-    0.045,
-    1.5,
-    mat(pathTileColors[Math.abs(Math.floor(z)) % 3])
+function cylinder(x, y, z, rt, rb, h, material, parent = scene) {
+  const mesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(rt, rb, h, 12), material
   );
+  mesh.position.set(x, y, z);
+  mesh.castShadow = true;
+  parent.add(mesh);
+  return mesh;
 }
 
-// ===================================
-// TOY TREES
-// ===================================
+// GREEN LEGO-LIKE LAND
+block(0, -0.45, 0, 60, 0.8, 60, green);
 
-function makeTree(x, z, size = 1) {
-  const tree = new THREE.Group();
-  tree.position.set(x, 0, z);
-  tree.scale.setScalar(size);
-  scene.add(tree);
-
-  box(tree, 0, 0.85, 0, 0.48, 1.7, 0.48, brownMat, true);
-
-  sphere(tree, 0, 2.05, 0, 1.05, greenMat, [1, 0.95, 1]);
-  sphere(tree, -0.48, 2.2, 0.12, 0.7, mat("#73d85c"));
-  sphere(tree, 0.48, 2.25, -0.1, 0.68, mat("#8be46b"));
-
-  return tree;
+function stud(x, z, color = "#48ad36") {
+  cylinder(x, 0.02, z, 0.13, 0.13, 0.12, mat(color));
 }
 
-for (let i = 0; i < 15; i++) {
-  const z = -32 + i * 3.8;
-  makeTree(-7 - Math.sin(i) * 1.5, z, 0.8 + (i % 3) * 0.12);
-  makeTree(7 + Math.cos(i) * 1.2, z + 1, 0.85 + (i % 2) * 0.2);
-}
-
-// ===================================
-// COLORFUL BRICK HOUSES
-// ===================================
-
-function makeHouse(x, z, wallColor, roofColor) {
-  const house = new THREE.Group();
-  house.position.set(x, 0, z);
-  scene.add(house);
-
-  const wall = mat(wallColor);
-  const roof = mat(roofColor);
-
-  box(house, 0, 1.25, 0, 3.6, 2.5, 3, wall, true);
-
-  // Sloped-looking roof layers
-  box(house, 0, 2.65, 0, 4.1, 0.35, 3.5, roof, true);
-  box(house, 0, 2.9, 0, 3.6, 0.22, 3, roof, true);
-
-  // Door
-  box(house, 0, 0.7, 1.53, 0.8, 1.4, 0.12, brownMat);
-
-  // Windows
-  box(house, -1.15, 1.65, 1.56, 0.75, 0.7, 0.1, blueMat);
-  box(house, 1.15, 1.65, 1.56, 0.75, 0.7, 0.1, blueMat);
-
-  // Window frames
-  box(house, -1.15, 1.65, 1.64, 0.09, 0.75, 0.08, whiteMat);
-  box(house, 1.15, 1.65, 1.64, 0.09, 0.75, 0.08, whiteMat);
-
-  return house;
-}
-
-makeHouse(-10, -5, "#fff0c5", "#ff8a76");
-makeHouse(10, -10, "#ffe6c7", "#65b8ed");
-makeHouse(-11, 8, "#ffd8e0", "#ffbc54");
-makeHouse(10, 7, "#fff2d5", "#a78bfa");
-makeHouse(-13, -20, "#ffedba", "#70cf95");
-makeHouse(13, -25, "#ffe4b6", "#ef8b75");
-
-// ===================================
-// FLOWERS
-// ===================================
-
-function makeFlower(x, z, color) {
-  const flower = new THREE.Group();
-  flower.position.set(x, 0, z);
-  scene.add(flower);
-
-  box(flower, 0, 0.23, 0, 0.09, 0.45, 0.09, greenMat);
-
-  for (let i = 0; i < 5; i++) {
-    const a = (i / 5) * Math.PI * 2;
-    sphere(
-      flower,
-      Math.cos(a) * 0.23,
-      0.48,
-      Math.sin(a) * 0.23,
-      0.19,
-      mat(color)
-    );
+for (let x = -25; x <= 25; x += 1.8) {
+  for (let z = -18; z <= 18; z += 1.8) {
+    if (Math.random() > 0.38 && Math.abs(x) > 5) {
+      stud(x, z);
+    }
   }
-
-  sphere(flower, 0, 0.48, 0, 0.13, yellowMat);
 }
 
-for (let i = 0; i < 45; i++) {
-  const side = i % 2 === 0 ? -1 : 1;
-  const x = side * (3.5 + Math.random() * 4);
-  const z = -30 + Math.random() * 43;
+// TOY TREES
+function tree(x, z, size = 1) {
+  cylinder(
+    x, 0.8 * size, z, 0.23 * size, 0.3 * size,
+    1.6 * size, wood
+  );
 
-  makeFlower(
-    x,
-    z,
-    ["#ff8fbd", "#ffe16b", "#ffffff", "#a98aff"][i % 4]
+  const crown = block(
+    x, 2.1 * size, z, 1.65 * size,
+    1.35 * size, 1.45 * size, darkGreen
+  );
+  crown.position.y = 2.05 * size;
+
+  ball(
+    x, 2.9 * size, z, 0.18 * size, green
+  );
+  ball(
+    x + 0.4 * size, 2.25 * size, z - 0.7 * size,
+    0.17 * size, green
+  );
+  ball(
+    x - 0.4 * size, 2.3 * size, z + 0.7 * size,
+    0.17 * size, green
   );
 }
 
-// ===================================
-// SMALL RIVER AND BRIDGE
-// ===================================
+for (let i = 0; i < 18; i++) {
+  const side = i % 2 === 0 ? -1 : 1;
+  tree(side * (8 + Math.random() * 8),
+    -8 + Math.random() * 20,
+    0.8 + Math.random() * 0.65);
+}
 
-const water = new THREE.Mesh(
-  new THREE.BoxGeometry(5, 0.18, 38),
-  new THREE.MeshStandardMaterial({
-    color: "#48c9f0",
-    roughness: 0.25,
-    metalness: 0.05
-  })
-);
+// SMALL COLOURFUL HOUSES
+function house(x, z, roofColor) {
+  block(x, 1.15, z, 3.2, 2.3, 2.7, cream);
+  block(x, 2.45, z, 3.5, 0.25, 3, yellow);
 
-water.position.set(15, 0.03, -13);
-water.receiveShadow = true;
-scene.add(water);
+  // Two roof slopes
+  const roof1 = block(
+    x - 0.8, 3.05, z, 2, 0.3, 3.3, mat(roofColor)
+  );
+  roof1.rotation.z = -0.45;
 
-// River banks
-box(scene, 12.2, 0.1, -13, 0.35, 0.4, 38, mat("#a4d981"));
-box(scene, 17.8, 0.1, -13, 0.35, 0.4, 38, mat("#a4d981"));
+  const roof2 = block(
+    x + 0.8, 3.05, z, 2, 0.3, 3.3, mat(roofColor)
+  );
+  roof2.rotation.z = 0.45;
 
-// Bridge across river
-box(scene, 15, 0.6, -10, 7, 0.35, 2.5, brownMat, true);
-box(scene, 15, 1.15, -11, 7, 0.2, 0.2, brickMat, true);
-box(scene, 15, 1.15, -9, 7, 0.2, 0.2, brickMat, true);
+  block(x, 0.75, z - 1.38, 0.8, 1.5, 0.12, wood);
 
-// ===================================
-// DISTANT MOSQUE LANDMARK
-// ===================================
+  for (const wx of [-1, 1]) {
+    block(x + wx, 1.65, z - 1.4, 0.55, 0.6, 0.1, blue);
+  }
+}
 
-function makeMosque(x, z) {
-  const mosque = new THREE.Group();
-  mosque.position.set(x, 0, z);
-  scene.add(mosque);
+house(-8, -2, "#ff655f");
+house(8, -3, "#ffc33f");
+house(-5, 5, "#42b7ff");
+house(11, 5, "#ffbf4c");
 
-  box(mosque, 0, 1.5, 0, 5.5, 3, 4.5, whiteMat, true);
+// MOSQUE
+function mosque() {
+  const x = 1, z = -8;
+
+  block(x, 1.4, z, 6, 2.8, 4, cream);
 
   // Green dome
-  sphere(mosque, 0, 3.55, 0, 1.7, greenMat, [1, 0.9, 1]);
-
-  // Entrance
-  box(mosque, 0, 1, 2.3, 1.15, 2, 0.16, brownMat);
+  const dome = new THREE.Mesh(
+    new THREE.SphereGeometry(1.8, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2),
+    mat("#28b77b")
+  );
+  dome.position.set(x, 2.8, z);
+  scene.add(dome);
 
   // Minaret
-  box(mosque, 3.4, 2.1, 0, 0.85, 4.2, 0.85, whiteMat, true);
-  sphere(mosque, 3.4, 4.55, 0, 0.52, greenMat, [0.8, 1, 0.8]);
-
-  // Crescent-like decorative moon
-  const moon = new THREE.Mesh(
-    new THREE.TorusGeometry(0.2, 0.06, 8, 16),
-    yellowMat
-  );
-  moon.position.set(3.4, 5.2, 0);
-  mosque.add(moon);
+  cylinder(4.5, 2.4, z, 0.38, 0.48, 4.8, cream);
+  cylinder(4.5, 4.9, z, 0.58, 0.58, 0.25, mat("#25b77c"));
+  cylinder(4.5, 5.8, z, 0.2, 0.32, 1.5, cream);
+  ball(4.5, 6.65, z, 0.25, yellow);
+  block(x, 0.95, z - 2.06, 1.1, 1.9, 0.15, wood);
 }
 
-makeMosque(0, -33);
+mosque();
 
-// ===================================
-// PLAYER: CUTE TOY EXPLORER
-// ===================================
+// RIVER
+block(12, -0.02, 2, 5, 0.12, 24, blue);
 
-const player = new THREE.Group();
-scene.add(player);
-player.position.set(0, 0, 5);
+const water = new THREE.MeshStandardMaterial({
+  color: "#39bdf5",
+  roughness: 0.22,
+  metalness: 0.08
+});
+block(12, 0.08, 2, 4.5, 0.08, 23, water);
 
-const skinMat = mat("#f5bd91");
-const shirtMat = mat("#18a99a");
-const pantsMat = mat("#247ca1");
-const capMat = mat("#fff5df");
+// BRIDGE
+block(12, 0.45, 1, 5.3, 0.3, 2.4, wood);
 
-const body = new THREE.Group();
-player.add(body);
+for (const side of [-1, 1]) {
+  block(12 + side * 2.4, 0.95, 1, 0.2, 1.1, 2.8, wood);
 
-// Body and legs
-box(body, 0, 1.05, 0, 0.95, 1.1, 0.58, shirtMat, true);
-box(body, -0.25, 0.35, 0, 0.35, 0.65, 0.4, pantsMat);
-box(body, 0.25, 0.35, 0, 0.35, 0.65, 0.4, pantsMat);
-
-// Shoes
-box(body, -0.25, 0.08, 0.1, 0.4, 0.18, 0.55, whiteMat);
-box(body, 0.25, 0.08, 0.1, 0.4, 0.18, 0.55, whiteMat);
-
-// Head
-sphere(body, 0, 1.95, 0, 0.62, skinMat, [0.95, 1.05, 0.9]);
-
-// White cap
-sphere(body, 0, 2.43, 0, 0.58, capMat, [1, 0.35, 1]);
-
-// Eyes facing forward (-Z)
-sphere(body, -0.22, 2.02, -0.53, 0.085, mat("#302d2b"));
-sphere(body, 0.22, 2.02, -0.53, 0.085, mat("#302d2b"));
-
-// Eye highlights
-sphere(body, -0.24, 2.05, -0.60, 0.025, whiteMat);
-sphere(body, 0.20, 2.05, -0.60, 0.025, whiteMat);
-
-// Smile
-const smile = new THREE.Mesh(
-  new THREE.TorusGeometry(0.12, 0.035, 6, 12, Math.PI),
-  mat("#a64e45")
-);
-smile.position.set(0, 1.84, -0.56);
-smile.rotation.z = Math.PI;
-body.add(smile);
-
-// Arms
-const leftArm = box(body, -0.62, 1.0, 0, 0.27, 0.8, 0.3, shirtMat);
-const rightArm = box(body, 0.62, 1.0, 0, 0.27, 0.8, 0.3, shirtMat);
-
-sphere(body, -0.62, 0.58, 0, 0.16, skinMat);
-sphere(body, 0.62, 0.58, 0, 0.16, skinMat);
-
-// ===================================
-// MOVEMENT
-// ===================================
-
-const keys = {};
-let started = false;
-let messageTimer;
-
-window.addEventListener("keydown", (event) => {
-  keys[event.key.toLowerCase()] = true;
-
-  if (
-    ["arrowup", "arrowdown", "arrowleft", "arrowright", " "]
-      .includes(event.key.toLowerCase())
-  ) {
-    event.preventDefault();
+  for (let i = 0; i < 4; i++) {
+    block(
+      12 + side * 2.4, 0.8, 0.1 + i * 0.6,
+      0.32, 1.4, 0.3, mat("#c87b40")
+    );
   }
-});
-
-window.addEventListener("keyup", (event) => {
-  keys[event.key.toLowerCase()] = false;
-});
-
-window.addEventListener("blur", () => {
-  for (const key in keys) keys[key] = false;
-});
-
-document.querySelector("#startButton").addEventListener("click", () => {
-  started = true;
-  document.querySelector("#welcome").classList.add("hidden");
-  showMessage("Your adventure begins! 🌷");
-});
-
-function showMessage(text) {
-  const element = document.querySelector("#message");
-  element.textContent = text;
-  element.classList.add("visible");
-
-  clearTimeout(messageTimer);
-  messageTimer = setTimeout(() => {
-    element.classList.remove("visible");
-  }, 2500);
 }
 
-document.querySelectorAll("[data-action]").forEach((button) => {
-  button.addEventListener("click", () => {
-    const action = button.dataset.action;
+// CUTE TOY EXPLORERS
+function character(x, z, outfit, isGirl = false) {
+  const group = new THREE.Group();
+  group.position.set(x, 0, z);
+  scene.add(group);
 
-    const messages = {
-      explore: "Use WASD or arrow keys to explore the village! 🧭",
-      learn: "Learning corner: practise Arabic letters and Qur'an recitation with your teacher. 📖",
-      duas: "Dua corner: learn everyday duas with their meanings. 🤲",
-      stories: "Story corner: discover Islamic stories with trusted sources. 🌙"
-    };
+  // Feet
+  block(-0.28, 0.18, 0, 0.42, 0.32, 0.55, white, group);
+  block(0.28, 0.18, 0, 0.42, 0.32, 0.55, white, group);
 
-    showMessage(messages[action]);
-  });
-});
+  // Legs and body
+  block(0, 0.65, 0, 0.9, 0.7, 0.65, mat(outfit), group);
+  block(0, 1.4, 0, 1.15, 1.1, 0.7, mat(outfit), group);
 
-// ===================================
-// CAMERA AND ANIMATION
-// ===================================
+  // Arms
+  block(-0.72, 1.3, 0, 0.3, 0.8, 0.38, mat(outfit), group);
+  block(0.72, 1.3, 0, 0.3, 0.8, 0.38, mat(outfit), group);
 
-const clock = new THREE.Clock();
-const cameraTarget = new THREE.Vector3();
-const desiredCamera = new THREE.Vector3();
+  // Head
+  ball(0, 2.35, 0, 0.72, mat("#ffd2a7"), group);
 
-camera.position.set(0, 9, 15);
-camera.lookAt(player.position);
+  // Headwear
+  if (isGirl) {
+    ball(0, 2.62, 0, 0.78, mat("#fff0d5"), group);
+    block(0, 2.2, -0.38, 1.1, 1, 0.35, mat("#fff0d5"), group);
+  } else {
+    ball(0, 2.95, 0, 0.7, white, group);
+    block(0, 2.7, 0, 1.05, 0.16, 0.9, white, group);
+  }
 
+  // Eyes and smile
+  ball(-0.25, 2.42, 0.61, 0.105, mat("#34251f"), group);
+  ball(0.25, 2.42, 0.61, 0.105, mat("#34251f"), group);
+  ball(0, 2.14, 0.65, 0.12, mat("#e66a65"), group);
+
+  // Backpack
+  block(0, 1.45, 0.48, 0.65, 0.75, 0.25, pink, group);
+
+  return group;
+}
+
+const zayn = character(-2, 1, "#16b8ac", false);
+const aisha = character(1.1, 1.6, "#ffbe36", true);
+
+// PATH
+for (let i = 0; i < 15; i++) {
+  block(
+    -2 + Math.sin(i * 0.25) * 1.8,
+    0.02,
+    5 + i * 0.85,
+    1.7, 0.12, 0.8,
+    mat(i % 2 ? "#ffdc9a" : "#f6c878")
+  );
+}
+
+// FLOWERS
+for (let i = 0; i < 35; i++) {
+  const x = (Math.random() - 0.5) * 24;
+  const z = (Math.random() - 0.5) * 24;
+  if (Math.abs(x) < 5 && z > -3 && z < 6) continue;
+
+  const flowerColors = ["#ff75bd", "#fff3d4", "#ffd34e"];
+  cylinder(x, 0.22, z, 0.04, 0.05, 0.4, green);
+  ball(
+    x, 0.45, z, 0.22,
+    mat(flowerColors[i % flowerColors.length])
+  );
+}
+
+// RESIZE
+function resize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+window.addEventListener("resize", resize);
+
+// ANIMATION
 function animate() {
   requestAnimationFrame(animate);
 
-  const delta = Math.min(clock.getDelta(), 0.04);
-  const time = clock.elapsedTime;
-
-  let dx = 0;
-  let dz = 0;
-
-  if (started) {
-    if (keys["w"] || keys["arrowup"]) dz -= 1;
-    if (keys["s"] || keys["arrowdown"]) dz += 1;
-    if (keys["a"] || keys["arrowleft"]) dx -= 1;
-    if (keys["d"] || keys["arrowright"]) dx += 1;
-  }
-
-  const moving = dx !== 0 || dz !== 0;
-
-  if (moving) {
-    const length = Math.hypot(dx, dz);
-    dx /= length;
-    dz /= length;
-
-    const speed = 5 * delta;
-
-    player.position.x += dx * speed;
-    player.position.z += dz * speed;
-
-    player.position.x = THREE.MathUtils.clamp(
-      player.position.x, -20, 20
-    );
-
-    player.position.z = THREE.MathUtils.clamp(
-      player.position.z, -42, 18
-    );
-
-    player.rotation.y = Math.atan2(-dx, -dz);
-
-    // Tiny bouncy walking animation
-    body.position.y = Math.abs(Math.sin(time * 11)) * 0.09;
-    leftArm.rotation.x = Math.sin(time * 11) * 0.35;
-    rightArm.rotation.x = -Math.sin(time * 11) * 0.35;
-  } else {
-    body.position.y = Math.sin(time * 2) * 0.035;
-    leftArm.rotation.x = 0;
-    rightArm.rotation.x = 0;
-  }
-
-  // Smooth follow camera
-  desiredCamera.set(
-    player.position.x,
-    player.position.y + 8,
-    player.position.z + 13
-  );
-
-  camera.position.lerp(desiredCamera, 1 - Math.exp(-3 * delta));
-
-  cameraTarget.set(
-    player.position.x,
-    player.position.y + 1,
-    player.position.z - 3
-  );
-
-  camera.lookAt(cameraTarget);
+  const t = performance.now() * 0.001;
+  aisha.position.y = Math.sin(t * 2) * 0.06;
+  zayn.position.y = Math.sin(t * 2 + 1) * 0.06;
 
   renderer.render(scene, camera);
 }
 
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.7));
-});
-
 animate();
-

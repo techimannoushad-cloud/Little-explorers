@@ -1,4 +1,3 @@
-```css
 * {
   box-sizing: border-box;
 }
@@ -34,7 +33,7 @@ canvas {
   outline: none;
 }
 
-/* Keep the game interface above the 3D world */
+
 .topbar,
 .welcome,
 .hint,
@@ -42,7 +41,7 @@ canvas {
 #message {
   z-index: 2;
 }
-```
+
 
 .topbar {
   position: absolute;

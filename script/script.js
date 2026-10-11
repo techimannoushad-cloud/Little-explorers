@@ -586,3 +586,36 @@ function animate() {
 // START GAME
 resize();
 animate();
+
+
+// FIX: Make the Let's Explore button work
+document.addEventListener("DOMContentLoaded", () => {
+  const startButton = document.querySelector(
+    "#startButton, #start-btn, .start-button"
+  );
+
+  if (!startButton) {
+    console.error("Explore button not found!");
+    return;
+  }
+
+  startButton.addEventListener("click", () => {
+    const welcomeScreen = document.querySelector(
+      "#welcomeScreen, #welcome-screen, .welcome-screen"
+    );
+
+    if (welcomeScreen) {
+      welcomeScreen.style.display = "none";
+    }
+
+    const gameScreen = document.querySelector(
+      "#gameScreen, #game-screen, .game-screen"
+    );
+
+    if (gameScreen) {
+      gameScreen.style.display = "block";
+    }
+
+    console.log("Welcome screen completed!");
+  });
+});

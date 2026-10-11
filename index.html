@@ -1,65 +1,41 @@
- ```html
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Little Explorers 🕌</title>
-
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Little Explorers 🌙</title>
+  <link rel="stylesheet" href="./styled/style.css">
 </head>
-
 <body>
-
-    <!-- Loading Screen -->
-    <div id="loadingScreen">
-        <div class="loading-box">
-            <h1>🌙 Little Explorers</h1>
-            <p>Preparing your adventure...</p>
-            <div class="loader"></div>
-        </div>
+  <div id="game">
+    <div class="topbar">
+      <div class="logo">🌙 Little Explorers</div>
+      <div class="badge">✨ Learn • Explore • Grow</div>
     </div>
 
-    <!-- Game UI -->
-    <div id="gameUI">
-
-        <div class="top-bar">
-            <div class="game-title">
-                🌙 Little Explorers
-            </div>
-
-            <div class="stats">
-                ⭐ <span id="stars">0</span>
-            </div>
-        </div>
-
-        <div id="characterInfo">
-            <h2 id="characterName">Explorer</h2>
-            <p>Use WASD or arrow keys to explore!</p>
-        </div>
-
+    <div id="welcome" class="welcome">
+      <div class="welcome-card">
+        <div class="moon">🌙</div>
+        <h1>Welcome, Explorer!</h1>
+        <p>Discover a little world full of kindness, learning and adventure.</p>
+        <button id="startButton">Let's Explore! 🌷</button>
+      </div>
     </div>
 
-    <!-- 3D Game -->
-    <canvas id="gameCanvas"></canvas>
+    <div class="hint">⌨️ Move with WASD or arrow keys</div>
 
-    <!-- Mobile Controls -->
-    <div id="mobileControls">
-
-        <button class="control up" data-key="ArrowUp">▲</button>
-
-        <button class="control left" data-key="ArrowLeft">◀</button>
-        <button class="control down" data-key="ArrowDown">▼</button>
-        <button class="control right" data-key="ArrowRight">▶</button>
-
+    <div class="bottom-menu">
+      <button data-action="explore">🧭 <span>Explore</span></button>
+      <button data-action="learn">📖 <span>Learn</span></button>
+      <button data-action="duas">🤲 <span>Duas</span></button>
+      <button data-action="stories">📚 <span>Stories</span></button>
     </div>
 
-    <!-- Three.js -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-    <!-- Your Game -->
-    <script src="script.js"></script>
+    <div id="message" role="status"></div>
+  </div>
 
+  <script type="module" src="./script/script.js"></script>
 </body>
 </html>
 ```

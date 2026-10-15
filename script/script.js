@@ -162,7 +162,8 @@ for (let i = 0; i < 26; i++) {
   );
 }
 
-// SOFT CARTOON TREES
+// SOFT CARTOON TREES  
+const trees = [];
 function tree(x, z, s = 1) {
   const g = new THREE.Group();
   g.position.set(x, 0, z);
@@ -765,7 +766,10 @@ function animate() {
   });
 
   water.position.y = 0.08 + Math.sin(t * 1.5) * 0.025;
-
+trees.forEach(tree => {
+  tree.rotation.z =
+    Math.sin(t * 0.45 + tree.userData.phase) * 0.012;
+});
   renderer.render(scene, camera);
 }
 

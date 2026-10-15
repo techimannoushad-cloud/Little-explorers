@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,24 +18,56 @@
       <div class="welcome-card">
         <div class="moon">🌙</div>
         <h1>Welcome, Explorer!</h1>
-        <p>Discover a little world full of kindness, learning and adventure.</p>
-        <button id="startButton">Let's Explore! 🌷</button>
+        <p>
+          Discover a little world full of kindness,
+          learning and adventure.
+        </p>
+        <button id="startButton" type="button">
+          Let's Explore! 🌷
+        </button>
       </div>
     </div>
 
     <div class="hint">⌨️ Move with WASD or arrow keys</div>
 
     <div class="bottom-menu">
-      <button data-action="explore">🧭 <span>Explore</span></button>
-      <button data-action="learn">📖 <span>Learn</span></button>
-      <button data-action="duas">🤲 <span>Duas</span></button>
-      <button data-action="stories">📚 <span>Stories</span></button>
+      <button type="button" data-action="explore">
+        🧭 <span>Explore</span>
+      </button>
+      <button type="button" data-action="learn">
+        📖 <span>Learn</span>
+      </button>
+      <button type="button" data-action="duas">
+        🤲 <span>Duas</span>
+      </button>
+      <button type="button" data-action="stories">
+        📚 <span>Stories</span>
+      </button>
     </div>
 
     <div id="message" role="status"></div>
   </div>
 
   <script type="module" src="./script/script.js"></script>
+
+  <script>
+    window.addEventListener("load", () => {
+      const startButton = document.getElementById("startButton");
+      const welcome = document.getElementById("welcome");
+      const message = document.getElementById("message");
+
+      if (!startButton || !welcome) return;
+
+      startButton.addEventListener("click", () => {
+        welcome.style.display = "none";
+
+        if (message) {
+          message.textContent =
+            "🌟 Welcome to Little Explorers! Use WASD or arrow keys to move.";
+        }
+      });
+    });
+  </script>
 </body>
 </html>
-
+```
